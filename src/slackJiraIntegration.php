@@ -55,9 +55,10 @@ $jiraUpdatedText = "JIRA ticket assigned to you has been created/modified. ";
 #fully qualified path for your JIRA installation on the web, like: https://yourteam.atlassian.net/browse/
 $jiraIssuesPath = "https://yourteam.atlassian.net/browse/";
 
-#$slackUrlStem is a weak security check. This is the URL or a substring of your slack integration, like:  hooks.slack.com/services/[UNIQUE]/[IDENTIFIERS]/
-#you can leave it as a zero-length string, but that's not recommended
-$slackUrlStem = "hooks.slack.com/services/[UNIQUE]/[IDENTIFIERS]/"; 
+# This is the URL or a substring of your slack integration, like:  https://hooks.slack.com/services/[UNIQUE]/[IDENTIFIERS]/
+# Original code used this with either HTTP or HTTPS, but why wouldn't you use HTTPS?
+# 
+$slackUrlStem = "https://hooks.slack.com/services/[UNIQUE]/[IDENTIFIERS]/"; 
 
 $lineBreak = '\n';
 
@@ -67,10 +68,9 @@ $slackChannel = isset($_GET['slack_channel']) ? $_GET['slack_channel'] :  $defau
 $slackUserTag = isset($_GET['slack_user']) ? "<@".$_GET['slack_user'].">" :  "";
 $slackUrl = $_GET['slack_url'];
 
-#weak security check.
-$pos = strrpos($slackUrl, $slackUrlStem); 
-if ($pos === false) { 
-    exit();
+if (strncasecmp($slackUrl, $slackUrlStem, strlen($slackUrlStem)) != 0) {
+		exit('Bad URL: '.htmlspecialchars($slackUrl));
+	}
 }
 
 #fields parsed from "webhook" JIRA issue JSON. More info: https://yourteam.atlassian.net/plugins/servlet/webhooks
@@ -109,4 +109,5 @@ DEBUG:
 <? echo "Slack response : ". $query ?><hr/>
 <? echo "Slack Channel : ". $slackChannel ?><hr/>
 <? echo "Slack Url : ". $slackUrl ?><hr/>
+q
 <? echo "Slack User Tag : ". $slackUserTag ?><hr/>

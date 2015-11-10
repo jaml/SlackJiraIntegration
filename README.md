@@ -1,4 +1,7 @@
 # SlackJiraIntegration
+
+Tweaked version of Hearst-DD's SlackJiraIntegration at https://github.com/Hearst-DD/SlackJiraIntegration
+
 Customizable PHP script for adapting JIRA webhooks for a Slack integration. You can publish selected JIRA events to a chosen channel in Slack.
 
 
